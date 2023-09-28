@@ -28,6 +28,20 @@ export default function AuthForm() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(values);
+
+    if (variant === "SIGNUP") {
+      fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...values,
+        }),
+      });
+    } else {
+      // Signin
+    }
   };
   const handleAuthSocialClick = () => {
     console.log("Auth social clicked");

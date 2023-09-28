@@ -11,67 +11,66 @@ datasource db {
 }
 
 model User {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  email String @unique
-  emailVerified DateTime?
-  image String?
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  email          String    @unique
+  emailVerified  DateTime?
+  image          String?
   hashedPassword String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
-  conversationIds String[] @db.ObjectId
-  conversations Conversation[] @relation(fields: [conversationIds], references: [id])
+  conversationIds String[]       @db.ObjectId
+  conversations   Conversation[] @relation(fields: [conversationIds], references: [id])
 
-  messageIds String[] @db.ObjectId
-  messages Message[]
+  messageIds String[]  @db.ObjectId
+  messages   Message[]
 
   accounts Account[]
 }
 
 model Account {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  type String
-  provider String
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  type              String
+  provider          String
   providerAccountId String
-  refresh_token String? @db.String
-  access_token String? @db.String
-  expires_at Int?
-  token_type String?
-  scope String?
-  id_token String? @db.String
-  session_state String?
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
 
   userId String @db.ObjectId
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
 
 model Conversation {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String?
-  createdAt DateTime @default(now())
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  createdAt     DateTime @default(now())
   lastMessageAt DateTime @default(now())
-  isGroup Boolean?
+  isGroup       Boolean?
 
-  messageIds String[] @db.ObjectId
-  messages Message[]
+  messageIds String[]  @db.ObjectId
+  messages   Message[]
 
   userIds String[] @db.ObjectId
-  users User[] @relation(fields: [userIds], references: [id])
+  users   User[]   @relation(fields: [userIds], references: [id])
 }
 
 model Message {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  text String
-  image String?
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  text      String
+  image     String?
   createdAt DateTime @default(now())
 
-
-  conversationId String @db.ObjectId
-  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId String       @db.ObjectId
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   userId String @db.ObjectId
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
