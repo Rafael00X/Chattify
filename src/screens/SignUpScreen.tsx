@@ -5,11 +5,12 @@ import Link from "next/link";
 import { ChangeEvent, FormEvent, useState } from "react";
 
 const initialState = {
+  name: "",
   email: "",
   password: "",
 };
 
-export default function SignInScreen() {
+export default function SignUpScreen() {
   const [values, setValues] = useState(initialState);
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValues((prev) => {
@@ -28,12 +29,19 @@ export default function SignInScreen() {
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <Logo />
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Sign In to your account
+          Sign Up with a new account
         </h2>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form className="space-y-6" onSubmit={handleSubmit}>
+          <TextInput
+            label="Full name"
+            name="name"
+            type="text"
+            value={values.name}
+            onChange={handleChange}
+          />
           <TextInput
             label="Email address"
             name="email"
@@ -53,34 +61,21 @@ export default function SignInScreen() {
               type="submit"
               className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Sign in
+              Sign up
             </button>
           </div>
         </form>
 
         <p className="mt-10 text-center text-sm text-gray-500">
-          Not a member?{" "}
+          Already a member?{" "}
           <Link
-            href="/signup"
+            href="/signin"
             className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
           >
-            Sign up with a new account
+            Sign in to your account
           </Link>
         </p>
       </div>
-    </div>
-  );
-}
-
-function ForgotPassword() {
-  return (
-    <div className="text-sm">
-      <a
-        href="#"
-        className="font-semibold text-indigo-600 hover:text-indigo-500"
-      >
-        Forgot password?
-      </a>
     </div>
   );
 }
