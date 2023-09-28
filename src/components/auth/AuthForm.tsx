@@ -5,6 +5,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import Image from "next/image";
 import AuthSocialButton from "./AuthSocialButton";
 import Separator from "./Separator";
+import { signIn } from "next-auth/react";
 
 const initialState = {
   name: "",
@@ -17,6 +18,7 @@ type Variant = "SIGNUP" | "SIGNIN";
 export default function AuthForm() {
   const [variant, setVariant] = useState<Variant>("SIGNIN");
   const [values, setValues] = useState(initialState);
+  const [isLoading, setIsLoading] = useState(false);
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValues((prev) => {
       return {
@@ -29,6 +31,8 @@ export default function AuthForm() {
     event.preventDefault();
     console.log(values);
 
+    setIsLoading(true);
+
     if (variant === "SIGNUP") {
       fetch("/api/users", {
         method: "POST",
@@ -38,9 +42,21 @@ export default function AuthForm() {
         body: JSON.stringify({
           ...values,
         }),
-      });
+      })
+        .catch((error) => alert(error))
+        .finally(() => setIsLoading(false));
     } else {
-      // Signin
+      signIn("credentials", { ...values, redirect: false })
+        .then((callback) => {
+          if (!callback) return alert("Something went wrong!");
+          if (callback.error) {
+            alert("Invalid Credentials");
+          }
+          if (callback.ok && !callback.error) {
+            alert("Logged in");
+          }
+        })
+        .finally(() => setIsLoading(false));
     }
   };
   const handleAuthSocialClick = () => {
