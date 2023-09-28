@@ -1,9 +1,10 @@
 import User from "@/database/models/user";
-import { connectMongoDb } from "@/lib/mongodb";
+import dbConnectionPromise from "@/libs/mongoose";
+
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
-  await connectMongoDb();
+  await dbConnectionPromise;
   const allUsers = await User.find({}).exec();
   return NextResponse.json({ users: allUsers }, { status: 200 });
 }
@@ -11,7 +12,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const { name, email } = await request.json();
-    await connectMongoDb();
+    await dbConnectionPromise;
     // const existingUser = await User.findOne({ email }).exec();
     // if (existingUser) {
     //   return NextResponse.json({ error: "User already exists" }, { status: 400 });
