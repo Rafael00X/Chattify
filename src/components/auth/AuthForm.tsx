@@ -4,6 +4,7 @@ import TextInput from "@/components/common/TextInput";
 import { ChangeEvent, FormEvent, useState } from "react";
 import Image from "next/image";
 import AuthSocialButton from "./AuthSocialButton";
+import Separator from "./Separator";
 
 const initialState = {
   name: "",
@@ -109,21 +110,6 @@ export default function AuthForm() {
           {toggleMessages[1]}
         </span>
       </p>
-    </div>
-  );
-}
-
-function Separator() {
-  return (
-    <div className="mt-6">
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300" />
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="bg-white px-2 text-gray-500">Or continue with</span>
-        </div>
-      </div>
     </div>
   );
 }
