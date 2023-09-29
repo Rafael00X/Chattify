@@ -27,6 +27,7 @@ export default function AuthForm() {
       };
     });
   };
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(values);
@@ -48,20 +49,32 @@ export default function AuthForm() {
     } else {
       signIn("credentials", { ...values, redirect: false })
         .then((callback) => {
-          if (!callback) return alert("Something went wrong!");
-          if (callback.error) {
+          if (callback?.error) {
             alert("Invalid Credentials");
           }
-          if (callback.ok && !callback.error) {
+          if (callback?.ok && !callback?.error) {
             alert("Logged in");
           }
         })
         .finally(() => setIsLoading(false));
     }
   };
-  const handleAuthSocialClick = () => {
-    console.log("Auth social clicked");
+
+  const handleAuthSocialClick = (provider: string) => {
+    setIsLoading(false);
+
+    signIn(provider, { redirect: false })
+      .then((callback) => {
+        if (callback?.error) {
+          alert("Invalid Credentials");
+        }
+        if (callback?.ok && !callback?.error) {
+          alert("Logged in");
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
+
   const toggleVariant = () => {
     setValues(initialState);
     setVariant((prev) => (prev === "SIGNIN" ? "SIGNUP" : "SIGNIN"));
@@ -127,7 +140,7 @@ export default function AuthForm() {
             icon={
               <Image src="/google.svg" alt="Google" width={18} height={18} />
             }
-            onClick={handleAuthSocialClick}
+            onClick={() => handleAuthSocialClick("google")}
           />
         </div>
       </div>
