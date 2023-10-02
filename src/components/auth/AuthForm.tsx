@@ -1,11 +1,13 @@
 "use client";
+
 import Logo from "@/components/common/Logo";
 import TextInput from "@/components/common/TextInput";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useReducer, useState } from "react";
 import Image from "next/image";
 import AuthSocialButton from "./AuthSocialButton";
 import Separator from "./Separator";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const initialState = {
   name: "",
@@ -19,6 +21,15 @@ export default function AuthForm() {
   const [variant, setVariant] = useState<Variant>("SIGNIN");
   const [values, setValues] = useState(initialState);
   const [isLoading, setIsLoading] = useState(false);
+  const session = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      router.push("/users");
+    }
+  }, [session.status, router]);
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValues((prev) => {
       return {
@@ -30,12 +41,10 @@ export default function AuthForm() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(values);
-
     setIsLoading(true);
 
     if (variant === "SIGNUP") {
-      fetch("/api/users", {
+      fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,6 +53,7 @@ export default function AuthForm() {
           ...values,
         }),
       })
+        .then(() => signIn("credentials", values))
         .catch((error) => alert(error))
         .finally(() => setIsLoading(false));
     } else {
@@ -69,7 +79,8 @@ export default function AuthForm() {
           alert("Invalid Credentials");
         }
         if (callback?.ok && !callback?.error) {
-          alert("Logged in");
+          // router.push("/users");
+          console.log("Authenticated");
         }
       })
       .finally(() => setIsLoading(false));
